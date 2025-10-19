@@ -17,6 +17,7 @@ namespace Persistence.Repositories
          => await  _dbContext.Set<TEntity>().AddAsync(entity);
         
 
+
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         
          =>  await _dbContext.Set<TEntity>().ToListAsync();
