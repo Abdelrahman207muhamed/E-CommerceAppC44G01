@@ -32,6 +32,8 @@ namespace E_CommerceAppC44G01
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(X => X.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddScoped<PictureUrlResolver>();
+            
             #endregion
 
             builder.Services.AddEndpointsApiExplorer();

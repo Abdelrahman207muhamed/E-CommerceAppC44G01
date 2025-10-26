@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Models;
+using Service.Specifications;
 using ServiceAbstraction;
+using Shared;
 using Shared.Dtos;
+using Shared.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +24,10 @@ namespace Service
             return BrandsDto;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync(ProductQueryParams queryParamas)
         {
-            var Products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync();
+            var Specifications = new ProductWithBrandAndTypeSpecifications(queryParamas);
+            var Products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(Specifications);
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(Products);
         }
 
@@ -34,8 +38,10 @@ namespace Service
         }
 
         public async Task<ProductDto?> GetProductByIdAsync(int Id)
+
         {
-            var Product = await _unitOfWork.GetRepository<Product,int>().GetByIdAsync(Id);
+            var Specifications = new ProductWithBrandAndTypeSpecifications(Id);
+            var Product = await _unitOfWork.GetRepository<Product,int>().GetByIdAsync(Specifications);
             return _mapper.Map<Product, ProductDto>(Product);
         }
     }
