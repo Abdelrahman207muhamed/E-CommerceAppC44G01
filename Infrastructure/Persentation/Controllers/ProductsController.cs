@@ -18,7 +18,7 @@ namespace Persentation.Controllers
     {
         #region Get All Products
         [HttpGet] // BaseUrl/api/Products
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams queryParamas )
+        public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams queryParamas )
         {
             var Products = await _serviceManager.ProductService.GetAllProductsAsync(queryParamas);
             return Ok(Products); //  بترجع الداتا علي هيئة جيسون داتا
