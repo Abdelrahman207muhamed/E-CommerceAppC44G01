@@ -28,6 +28,22 @@ namespace Service.Specifications
 
         public Expression<Func<TEntity, object>> OrderByDescending { get; private set; }
 
+        #region Pagnation
+        public int Take { get; private set; }
+        public int Skip { get; private set; }
+        public bool IsPaginated { get ; set ; }
+       //Total Count = 40
+       //Page Size = 10
+       //Page Index = 2
+       //10,10,10,10             10        //2
+        protected void ApplyPagination(int PageSize, int PageIndex)
+        { 
+            IsPaginated= true;
+            Take = PageSize;
+            Skip = (PageIndex - 1) * PageSize; //1*10 = 10      
+        
+        }
+        #endregion
         protected void AddOrderByDescending(Expression<Func<TEntity, object>> OrderByDesc)
          => OrderByDescending = OrderByDesc;
 

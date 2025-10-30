@@ -12,15 +12,17 @@ namespace Service.Specifications
     public class ProductWithBrandAndTypeSpecifications :BaseSpecifications<Product,int>
     {
         //Get All Product With Brands And Types   
-        public ProductWithBrandAndTypeSpecifications(ProductQueryParams queryParamas)
-            : base(P => (!queryParamas.BrandId.HasValue || P.BrandId == queryParamas.BrandId) &&
-            (!queryParamas.TypeId.HasValue || P.TypeId == queryParamas.TypeId)
-            && (string.IsNullOrWhiteSpace(queryParamas.SreachValue) || P.Name.Contains(queryParamas.SreachValue.ToLower())))
+        public ProductWithBrandAndTypeSpecifications(ProductQueryParams queryParams)
+            : base( P => (!queryParams.BrandId.HasValue || P.BrandId == queryParams.BrandId)
+            &&(!queryParams.TypeId.HasValue || P.TypeId == queryParams.TypeId)
+            && (string.IsNullOrWhiteSpace(queryParams.SreachValue) || P.Name.Contains(queryParams.SreachValue.ToLower())))
         {
             AddInclude(P => P.productBrand);
             AddInclude(P => P.productType);
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+           
             #region Sorting
-            switch (queryParamas.sortingOptions)
+            switch (queryParams.sortingOptions)
             {
                 case ProductSortingOptions.NameAsc:
                     AddOrderBy(P => P.Name);

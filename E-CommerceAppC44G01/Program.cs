@@ -1,5 +1,6 @@
 
 using DomainLayer.Contracts;
+using E_CommerceAppC44G01.CustomMiddelWare;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 using Persistence.Data.DataSeed;
@@ -45,11 +46,12 @@ namespace E_CommerceAppC44G01
 
             var Scope = app.Services.CreateScope();
             var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-           await ObjectOfDataSeeding.DataSeedAsync(); 
-            
+           await ObjectOfDataSeeding.DataSeedAsync();
+
             #endregion
 
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<CustomExceptionHandlerMiddelWare>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

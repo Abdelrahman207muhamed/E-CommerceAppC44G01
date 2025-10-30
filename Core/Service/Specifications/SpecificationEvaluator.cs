@@ -16,8 +16,9 @@ namespace Service.Specifications
         //_dbContext.Products.where(P=>P.Id==id).Include (P=>P.ProductType);.Include(P=>P.ProductBrand)
         public static IQueryable<TEntity> CreateQuery<TEntity, TKey>(IQueryable<TEntity> InputQuery, ISpecifications<TEntity, TKey> specififcations) where TEntity : BaseEntity<TKey>
         {
-            //Sum = Sum+i;
+            //Step 01 
             var Query = InputQuery;
+            //Step 02 : Check Criteria
             if (specififcations.Criteria is not null)
             {
                 Query = Query.Where(specififcations.Criteria);
@@ -31,13 +32,14 @@ namespace Service.Specifications
             {
                 Query = Query.OrderByDescending(specififcations.OrderByDescending);
             }
-
-
-
-
+            //Step 03 : Check Includes            
             if(specififcations.IncludeExpression is not null && specififcations.IncludeExpression.Count>0)
             {
                 Query = specififcations.IncludeExpression.Aggregate(Query, (CurrentQuery, IncludeExp) => CurrentQuery.Include(IncludeExp));
+            }
+            if (specififcations.IsPaginated)
+            {
+                Query = Query.Skip(specififcations.Skip).Take(specififcations.Take);
             }
             return Query;
 
