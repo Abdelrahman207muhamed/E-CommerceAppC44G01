@@ -6,6 +6,7 @@ using Shared.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,10 @@ namespace Persentation.Controllers
         #endregion
 
         #region Get Product By Id 
+        [ProducesResponseType(typeof(ErrorDetails),(int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorDetails),(int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType(typeof(ValidationErrorResponse),(int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ProductDto),(int)HttpStatusCode.OK)]
         [HttpGet("{Id:int}")] // BaseUrl/api/Products/1
         public async Task<ActionResult<ProductDto>> GetProduct(int Id)
         {

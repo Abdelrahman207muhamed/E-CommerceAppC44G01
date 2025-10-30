@@ -1,12 +1,18 @@
 
 using DomainLayer.Contracts;
 using E_CommerceAppC44G01.CustomMiddelWare;
+using E_CommerceAppC44G01.Extentions;
+using E_CommerceAppC44G01.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Options;
 using Persistence.Data;
 using Persistence.Data.DataSeed;
 using Persistence.Repositories;
 using Service;
 using ServiceAbstraction;
+using Shared.ErroModels;
 
 namespace E_CommerceAppC44G01
 {
@@ -18,40 +24,29 @@ namespace E_CommerceAppC44G01
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             
             #region Configure Services
-
-
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-            });
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(X => X.AddProfile(new MappingProfiles()));
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddInfraStructureService(builder.Configuration);
+            builder.Services.AddCoreServices();
+            builder.Services.AddPersentationServices();
             builder.Services.AddScoped<PictureUrlResolver>();
-            
+         
             #endregion
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-  
+
+            #region Build
             var app = builder.Build();
-
-            #region Services
-
-            var Scope = app.Services.CreateScope();
-            var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-           await ObjectOfDataSeeding.DataSeedAsync();
 
             #endregion
 
+
+            #region MiddleWares
+             app.UseCustomMiddleWareExceptions();
+            await app.SeedDbAsync();
             // Configure the HTTP request pipeline.
-            app.UseMiddleware<CustomExceptionHandlerMiddelWare>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -68,6 +63,9 @@ namespace E_CommerceAppC44G01
             app.MapControllers();
 
             app.Run();
+            #endregion
+
+            
         }
     }
 }
