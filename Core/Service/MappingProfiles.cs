@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using DomainLayer.Models;
+using DomainLayer.Models.BasketModule;
 using Shared.Dtos;
+using Shared.Dtos.BasketDtos;
 
 namespace Service
 {
@@ -24,6 +26,13 @@ namespace Service
             CreateMap<ProductType, TypeDto>();      ////مطلبش مني اعمل ريفيرس ماب 
             CreateMap<ProductBrand, BrandDto>();    ////مطلبش مني اعمل ريفيرس ماب 
 
+
+            #endregion
+
+            #region Basket
+
+            CreateMap<CustomerBasket, BasketDto>().ReverseMap();
+            CreateMap<BasketItem, BasketItemDto>().ReverseMap();
 
             #endregion
         }

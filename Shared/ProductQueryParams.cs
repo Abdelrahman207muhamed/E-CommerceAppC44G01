@@ -16,6 +16,7 @@ namespace Shared
         public ProductSortingOptions  sortingOptions { get; set; }
         public string? SreachValue { get; set; }
         public int PageIndex { get; set; } = 1;
+
         private int pagesize = DefaultPageSize;
         public int PageSize 
         {
