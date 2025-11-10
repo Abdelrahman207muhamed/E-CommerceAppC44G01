@@ -3,6 +3,7 @@ using ServiceAbstraction;
 using Shared;
 using Shared.Dtos;
 using Shared.Enum;
+using Shared.ErroModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +29,12 @@ namespace Persentation.Controllers
         #endregion
 
         #region Get Product By Id 
-        [ProducesResponseType(typeof(ErrorDetails),(int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ErrorDetails),(int)HttpStatusCode.InternalServerError)]
-        [ProducesResponseType(typeof(ValidationErrorResponse),(int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorToReturn),(int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorToReturn),(int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType(typeof(ValidationErrorToReturn),(int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ProductDto),(int)HttpStatusCode.OK)]
-        [HttpGet("{Id:int}")] // BaseUrl/api/Products/1
+       
+        [HttpGet("{Id:int}")] // BaseUrl/api/Products/1[GET]
         public async Task<ActionResult<ProductDto>> GetProduct(int Id)
         {
             var Product = await _serviceManager.ProductService.GetProductByIdAsync(Id);

@@ -1,5 +1,8 @@
-﻿using Service;
+﻿using DomainLayer.Contracts;
+using Persistence.Repositories;
+using Service;
 using ServiceAbstraction;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
 namespace E_CommerceAppC44G01.Extentions
@@ -8,9 +11,13 @@ namespace E_CommerceAppC44G01.Extentions
     {
         public static IServiceCollection AddCoreServices(this IServiceCollection Services)
         {
+            Services.AddAutoMapper(X => { }, typeof(AssemblyReference).Assembly);
             Services.AddScoped<IServiceManager, ServiceManager>();
-            Services.AddAutoMapper(X => X.AddProfile(new MappingProfiles()));
+            Services.AddScoped<IBasketRepository, BasketRepository>();
+
             return Services;
         }
+
+
     }
 }

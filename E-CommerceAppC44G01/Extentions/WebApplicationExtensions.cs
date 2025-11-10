@@ -1,5 +1,7 @@
 ﻿using DomainLayer.Contracts;
 using E_CommerceAppC44G01.CustomMiddelWare;
+using E_CommerceAppC44G01.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace E_CommerceAppC44G01.Extentions
@@ -12,14 +14,21 @@ namespace E_CommerceAppC44G01.Extentions
             using var Scope = app.Services.CreateScope();
             var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
             await ObjectOfDataSeeding.DataSeedAsync();
+            await ObjectOfDataSeeding.IdentityDataSeed();
             return app;
         }
 
-        public static WebApplication UseCustomMiddleWareExceptions(this WebApplication app) 
+        public static WebApplication UseCustomMiddleWareExceptions(this WebApplication app)
         {
             app.UseMiddleware<CustomExceptionHandlerMiddelWare>();
             return app;
         }
 
+        public static WebApplication UseSwaggerMiddlewares(this WebApplication app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            return app;
+        }
     }
 }

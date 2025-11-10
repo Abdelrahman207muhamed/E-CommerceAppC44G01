@@ -1,4 +1,4 @@
-
+ 
 using DomainLayer.Contracts;
 using E_CommerceAppC44G01.CustomMiddelWare;
 using E_CommerceAppC44G01.Extentions;
@@ -13,6 +13,7 @@ using Persistence.Repositories;
 using Service;
 using ServiceAbstraction;
 using Shared.ErroModels;
+using StackExchange.Redis;
 
 namespace E_CommerceAppC44G01
 {
@@ -22,35 +23,31 @@ namespace E_CommerceAppC44G01
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            
-            #region Configure Services
+
+            #region DI Container
+            //WebApi Services
+            builder.Services.AddWebApiServices();
+
+            //Infrastructure Services 
             builder.Services.AddInfraStructureService(builder.Configuration);
+
+
+            //Core Services
             builder.Services.AddCoreServices();
-            builder.Services.AddPersentationServices();
-            builder.Services.AddScoped<PictureUrlResolver>();
-         
             #endregion
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            #region Build
+            #region Pipelines - Middlewares
             var app = builder.Build();
-
-            #endregion
-
-
-            #region MiddleWares
-             app.UseCustomMiddleWareExceptions();
             await app.SeedDbAsync();
+
+            //MiddleWare ==> Handle Exception
             // Configure the HTTP request pipeline.
+            app.UseCustomMiddleWareExceptions();
+
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddlewares();
             }
 
             app.UseHttpsRedirection();
@@ -59,13 +56,19 @@ namespace E_CommerceAppC44G01
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
             #endregion
 
-            
+            builder.Services.AddPersentationServices();
+            builder.Services.AddScoped<PictureUrlResolver>();
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            {
+                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
+            });
+
         }
     }
 }

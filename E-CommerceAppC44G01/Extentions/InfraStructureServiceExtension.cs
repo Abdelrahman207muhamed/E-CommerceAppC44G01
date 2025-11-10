@@ -1,4 +1,6 @@
 ﻿using DomainLayer.Contracts;
+using DomainLayer.Models.IdentityModule;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 using Persistence.Data.DataSeed;
@@ -8,17 +10,32 @@ namespace E_CommerceAppC44G01.Extentions
 {
     public static class InfraStructureServiceExtension
     {
-        public static IServiceCollection AddInfraStructureService(this IServiceCollection Services, IConfiguration configuration)
+        public static IServiceCollection AddInfraStructureService(this IServiceCollection services, IConfiguration configuration)
         {
-            Services.AddScoped<IDataSeeding, DataSeeding>();
-            Services.AddScoped<IUnitOfWork, UnitOfWork>();
-           Services.AddDbContext<StoreDbContext>(options =>
+            services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
             });
-            //return
-            return Services;
+
+            services.AddScoped<IDataSeeding, DataSeeding>();
+
+            services.AddDbContext<StoreIdentityDbContext>(options =>
+           {
+               options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
+
+           });
+
+
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddIdentityCore<ApplicationUser>()
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+
+            return services;
 
         }
     }
