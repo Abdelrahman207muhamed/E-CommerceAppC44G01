@@ -32,26 +32,29 @@ namespace E_CommerceAppC44G01.CustomMiddelWare
 
         private static async Task HandelExceptionAsync(HttpContext httpContext, Exception ex)
         {
-            httpContext.Response.StatusCode = ex switch
-            {
-                NotFoundException => StatusCodes.Status404NotFound,
-                _ => StatusCodes.Status500InternalServerError // Defaultدا ال
-            };
-
-            //Set Content Type For Response
-            httpContext.Response.ContentType = "application/json";
-
-            //Response Object
             var Response = new ErrorToReturn()
             {
-                StatusCode = httpContext.Response.StatusCode,
                 ErrorMessage = ex.Message
             };
 
+            Response.StatusCode = ex switch
+            {
+                NotFoundException => StatusCodes.Status404NotFound,
+                UnauthorizedException=>StatusCodes.Status401Unauthorized,
+                BadRequestException badRequestException=>GetBadRequestErrors(badRequestException ,Response),
+                _ => StatusCodes.Status500InternalServerError 
+            };
+
             //Response Object As Json
+            await httpContext.Response.WriteAsJsonAsync(Response);
             //var ResponseToReturn = JsonSerializer.Serialize(Response);
             //await httpContext.Response.WriteAsync(ResponseToReturn);
-            await httpContext.Response.WriteAsJsonAsync(Response);
+        }
+
+        private static int GetBadRequestErrors(BadRequestException badRequestException, ErrorToReturn response)
+        {
+            response.Errors = badRequestException.Errors;
+            return StatusCodes.Status400BadRequest;
         }
 
         private static async Task HandelNotFoundEndPoint(HttpContext httpContext)
