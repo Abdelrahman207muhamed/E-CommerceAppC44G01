@@ -14,7 +14,7 @@ namespace Persentation.Controllers
         #region login
         [HttpPost("Login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
-        {
+         {
             var User = await _serviceManager.AuthenticationService.LoginAsync(loginDto);
             return Ok(User);
         }
