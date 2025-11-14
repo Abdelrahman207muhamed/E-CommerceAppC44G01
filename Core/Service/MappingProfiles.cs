@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DomainLayer.Models;
 using DomainLayer.Models.BasketModule;
+using DomainLayer.Models.IdentityModule;
 using Shared.Dtos;
 using Shared.Dtos.BasketDtos;
+using Shared.Dtos.IdentityDtos;
 
 namespace Service
 {
@@ -33,6 +35,11 @@ namespace Service
 
             CreateMap<CustomerBasket, BasketDto>().ReverseMap();
             CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+
+            #endregion
+
+            #region Identity
+            CreateMap<Address, AddressDto>().ReverseMap();
 
             #endregion
         }

@@ -25,24 +25,29 @@ namespace E_CommerceAppC44G01
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-            #region DI Container
             //WebApi Services
             builder.Services.AddWebApiServices();
 
-            //Infrastructure Services 
             builder.Services.AddInfraStructureService(builder.Configuration);
 
+            builder.Services.ADDJWTService(builder.Configuration);
 
-            //Core Services
             builder.Services.AddCoreServices();
-            #endregion
+            
+            builder.Services.AddPersentationServices();
 
-            #region Pipelines - Middlewares
+
+            builder.Services.AddScoped<PictureUrlResolver>();
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            {
+                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
+            });
+
             var app = builder.Build();
             await app.SeedDbAsync();
 
-            //MiddleWare ==> Handle Exception
-            // Configure the HTTP request pipeline.
+          
             app.UseCustomMiddleWareExceptions();
 
             if (app.Environment.IsDevelopment())
@@ -54,20 +59,17 @@ namespace E_CommerceAppC44G01
 
             app.UseStaticFiles();
 
+            app.UseRouting();
+
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.MapControllers();
 
             app.Run();
-            #endregion
 
-            builder.Services.AddPersentationServices();
-            builder.Services.AddScoped<PictureUrlResolver>();
-            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-            builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
-            {
-                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
-            });
+            
 
         }
     }

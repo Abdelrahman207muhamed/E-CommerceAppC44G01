@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ServiceAbstraction;
 using Shared;
 using Shared.Dtos;
@@ -18,6 +19,7 @@ namespace Persentation.Controllers
     public class ProductsController(IServiceManager _serviceManager) :APIBaseController
     {
         #region Get All Products
+        [Authorize]
         [HttpGet] // BaseUrl/api/Products
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryParams queryParamas )
         {
