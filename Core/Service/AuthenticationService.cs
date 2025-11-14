@@ -1,17 +1,21 @@
 ﻿using DomainLayer.Exceptions;
 using DomainLayer.Models.IdentityModule;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using ServiceAbstraction;
 using Shared.Dtos.IdentityDtos;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Service
 {
-    public class AuthenticationService(UserManager<ApplicationUser> _userManager) : IAuthenticationService
+    public class AuthenticationService(UserManager<ApplicationUser> _userManager ,IConfiguration _Configuration) : IAuthenticationService
     {
         public async Task<UserDto> LoginAsync(LoginDto loginDto)
         {       
@@ -29,7 +33,7 @@ namespace Service
                 {
                     DisplayName = User.DisplayName,
                     Email = User.Email,
-                    Token = CreateTokenAsync(User)
+                    Token = await CreateTokenAsync(User)
                 };
             }
             else 
@@ -59,7 +63,7 @@ namespace Service
                 {
                     DisplayName = User.DisplayName,
                     Email = User.Email,
-                    Token = CreateTokenAsync(User)
+                    Token = await CreateTokenAsync(User)
                 };
             }
             else
@@ -71,9 +75,36 @@ namespace Service
 
 
         }
-        private static string CreateTokenAsync(ApplicationUser User)
+        private  async Task<string> CreateTokenAsync(ApplicationUser User)
         {
-            return "Token To Do";
+
+            var Claims = new List<Claim>()
+            {
+                new (ClaimTypes.Email,User.Email!),
+                new (ClaimTypes.Name,User.UserName!),
+                new (ClaimTypes.NameIdentifier,User.Id)
+
+            };
+            var Roles = await _userManager.GetRolesAsync(User);
+            foreach (var role in Roles)
+               
+                Claims.Add(new Claim(ClaimTypes.Role, role));
+            //---------------------------------
+            var SecretKey = _Configuration.GetSection("JWTOptions")["SecretKey"];
+            var Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var Creds = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
+            //---------------------------------
+            var Token = new JwtSecurityToken(
+                issuer: _Configuration["JWTOptions.Issuer"],       //الجهة او السيرفر  اللي عملتلي التوكين
+                audience: _Configuration["JWTOptions.Audience"], //دا الشخص المستخدم
+                claims: Claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials:Creds
+
+
+                );
+            return new JwtSecurityTokenHandler().WriteToken(Token);
+
         }
     }
 }
