@@ -1,5 +1,8 @@
 ﻿using E_CommerceAppC44G01.Factories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace E_CommerceAppC44G01.Extentions
 {
@@ -16,5 +19,30 @@ namespace E_CommerceAppC44G01.Extentions
             });
             return Services;
         }
+
+        public static IServiceCollection ADDJWTService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(Config =>
+            {
+                Config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                Config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["JWTOptions:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = configuration["JWTOptions:Audience"],
+
+                    ValidateLifetime =true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTOptions:SecretKey"]))
+                };
+
+            });
+            return services;
+        }
+        
     }
 }
