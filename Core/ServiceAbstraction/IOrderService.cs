@@ -9,7 +9,12 @@ namespace ServiceAbstraction
 {
     public interface IOrderService
     {
-
         Task<OrderToReturnDto> CreateOrder(OrderDtos orderDtos, string Email);
+
+        Task<IEnumerable<DeliveryMethodDto>> GetAllDeliveryMethods();
+        Task<IEnumerable<OrderToReturnDto>>GetAllOrderAsync(string Email);
+
+        Task<OrderToReturnDto> GetOrderByIdAsync(Guid Id);
+
     }
 }
