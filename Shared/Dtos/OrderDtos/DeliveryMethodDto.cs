@@ -11,7 +11,7 @@ namespace Shared.Dtos.OrderDtos
         public int Id { get; set; }
         public string ShortName { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public string DeliveryMethod { get; set; } = null!;
+        public string DeliveryTime { get; set; } = null!;
         public decimal Price { get; set; }
 
     }

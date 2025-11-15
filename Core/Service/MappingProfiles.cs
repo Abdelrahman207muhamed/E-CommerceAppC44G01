@@ -59,7 +59,6 @@ namespace Service
                 .ForMember(d=>d.Quantity,o=>o.MapFrom(s=>s.Quantity));
 
             CreateMap<DeliveryMethod, DeliveryMethodDto>()
-                .ForMember(d=>d.DeliveryMethod,o=>o.MapFrom(s=>s.DeliveryTime))
                 .ReverseMap();  // No custom mapping needed now
 
 
