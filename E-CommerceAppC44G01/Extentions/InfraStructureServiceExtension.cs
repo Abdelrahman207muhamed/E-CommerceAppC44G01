@@ -28,9 +28,13 @@ namespace E_CommerceAppC44G01.Extentions
             //  Redis Connection Registration
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                var redisConfig = ConfigurationOptions.Parse(configuration.GetConnectionString("Redis"), true);
+                var redisConfig = ConfigurationOptions.Parse(
+                    configuration.GetConnectionString("Redis")!, true);
                 return ConnectionMultiplexer.Connect(redisConfig);
             });
+
+            //Basket Repository
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             //  Data Seeding
             services.AddScoped<IDataSeeding, DataSeeding>();

@@ -7,9 +7,11 @@ using AutoMapper;
 using DomainLayer.Models;
 using DomainLayer.Models.BasketModule;
 using DomainLayer.Models.IdentityModule;
+using DomainLayer.Models.OrderModule;
 using Shared.Dtos;
 using Shared.Dtos.BasketDtos;
 using Shared.Dtos.IdentityDtos;
+using Shared.Dtos.OrderDtos;
 
 namespace Service
 {
@@ -42,6 +44,12 @@ namespace Service
             CreateMap<Address, AddressDto>().ReverseMap();
 
             #endregion
+
+            #region Order
+            CreateMap<ShippingAddressDto, ShippingAddress>();
+
+            #endregion
+
         }
     }
 }
