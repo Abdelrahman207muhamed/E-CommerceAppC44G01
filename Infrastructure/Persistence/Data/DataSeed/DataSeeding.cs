@@ -1,6 +1,7 @@
 ﻿using DomainLayer.Contracts;
 using DomainLayer.Models;
 using DomainLayer.Models.IdentityModule;
+using DomainLayer.Models.OrderModule;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,7 +53,7 @@ namespace Persistence.Data.DataSeed
             #endregion
 
             #region Product 
-            if (!_dbContext.ProductTypes.Any())
+            if (!_dbContext.products.Any())
             {
                 var ProductsData = File.OpenRead(@"..\Infrastructure\Persistence\Data\DataSeed\products.json");
                 var Products = await JsonSerializer.DeserializeAsync<List<Product>>(ProductsData);
@@ -64,7 +65,21 @@ namespace Persistence.Data.DataSeed
 
             #endregion
 
-           await _dbContext.SaveChangesAsync();
+            #region  DeliveryMethod
+            if (!_dbContext.DeliveryMethods.Any())
+            {
+                var DeliveryData = File.OpenRead(@"..\Infrastructure\Persistence\Data\DataSeed\delivery.json");
+                var Methods = await JsonSerializer.DeserializeAsync<List<DeliveryMethod>>(DeliveryData);
+                if (Methods is not null && Methods.Any())
+                {
+                    await _dbContext.DeliveryMethods.AddRangeAsync(Methods);//Local
+                }
+
+            }
+
+            #endregion
+
+            await _dbContext.SaveChangesAsync();
             #endregion
 
 

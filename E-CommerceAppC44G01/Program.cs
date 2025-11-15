@@ -38,11 +38,11 @@ namespace E_CommerceAppC44G01
 
 
             builder.Services.AddScoped<PictureUrlResolver>();
-            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-            builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
-            {
-                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
-            });
+            //builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            //builder.Services.AddSingleton<IConnectionMultiplexer>((_) =>
+            //{
+            //    return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
+            //});
 
             var app = builder.Build();
             await app.SeedDbAsync();
