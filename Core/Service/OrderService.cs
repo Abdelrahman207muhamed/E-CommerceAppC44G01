@@ -77,8 +77,9 @@ namespace Service
         public async Task<IEnumerable<DeliveryMethodDto>> GetAllDeliveryMethods()
         {
             var DeliveryMethods = await _unitOfWork.GetRepository<DeliveryMethod, int>().GetAllAsync();
-            return _mapper.Map<IEnumerable<DeliveryMethod>, IEnumerable<DeliveryMethodDto>>(DeliveryMethods);
+            //  return _mapper.Map<IEnumerable<DeliveryMethod>, IEnumerable<DeliveryMethodDto>>(DeliveryMethods);
 
+            return _mapper.Map<IEnumerable<DeliveryMethodDto>>(DeliveryMethods);
         }
 
         public async Task<IEnumerable<OrderToReturnDto>> GetAllOrderAsync(string Email)

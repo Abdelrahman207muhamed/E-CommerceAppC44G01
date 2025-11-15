@@ -58,11 +58,9 @@ namespace Service
                 .ForMember(d=>d.Price,o=>o.MapFrom(s=>s.Price))
                 .ForMember(d=>d.Quantity,o=>o.MapFrom(s=>s.Quantity));
 
-            CreateMap<DeliveryMethodDto, DeliveryMethod>();
-
             CreateMap<DeliveryMethod, DeliveryMethodDto>()
-            .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryTime));
-
+                .ForMember(d=>d.DeliveryMethod,o=>o.MapFrom(s=>s.DeliveryTime))
+                .ReverseMap();  // No custom mapping needed now
 
 
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace E_CommerceAppC44G01.Extentions
 {
@@ -12,7 +13,40 @@ namespace E_CommerceAppC44G01.Extentions
         {
             Services.AddControllers();
             Services.AddEndpointsApiExplorer();
-            Services.AddSwaggerGen();
+            Services.AddSwaggerGen(options=>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+
+
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    Description = "Enter 'Bearer' Followed By And Your Token "
+
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                            
+                        },
+                         new string [] {}
+                    }
+
+                });
+
+            });
+
+
             Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = APIResponseFactory.GenerateApiValidationErrorResponse;
