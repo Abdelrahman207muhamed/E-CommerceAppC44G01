@@ -25,6 +25,7 @@ namespace E_CommerceAppC44G01.Extentions
                     .AllowCredentials();
                 });
 
+
             });
             services.AddEndpointsApiExplorer();
 
