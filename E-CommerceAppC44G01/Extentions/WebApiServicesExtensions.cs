@@ -24,6 +24,7 @@ namespace E_CommerceAppC44G01.Extentions
                     .WithOrigins(frontUrl)
                     .AllowCredentials();
                 });
+
             });
             services.AddEndpointsApiExplorer();
 
