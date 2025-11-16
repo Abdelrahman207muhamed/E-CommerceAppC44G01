@@ -11,7 +11,8 @@ namespace Service
         , Func<IBasketService> BasketFactory,
         Func<IAuthenticationService> AuthenticationFactory,
         Func<IOrderService>OrderFactory,
-        Func<IPaymentService>PaymentFactory) : IServiceManager
+        Func<IPaymentService>PaymentFactory,
+        Func<ICashService> _cacheFactory) : IServiceManager
     {
         public IProductService ProductService => ProductFactory.Invoke();
 
@@ -22,5 +23,7 @@ namespace Service
         public IOrderService OrderService => OrderFactory.Invoke();
 
         public IPaymentService PaymentService => PaymentFactory.Invoke() ;
+
+        public ICashService CashService => _cacheFactory.Invoke();
     }
 }

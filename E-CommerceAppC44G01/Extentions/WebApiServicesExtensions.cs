@@ -21,7 +21,7 @@ namespace E_CommerceAppC44G01.Extentions
                 options.AddPolicy("CorsPolicy", builder =>
                 {
                     builder.AllowAnyHeader().AllowAnyMethod()
-                    .WithOrigins(frontUrl)
+                    .WithOrigins(frontUrl!)
                     .AllowCredentials();
                 });
 

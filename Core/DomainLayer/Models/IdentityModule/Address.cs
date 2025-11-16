@@ -9,13 +9,13 @@ namespace DomainLayer.Models.IdentityModule
     public class Address
     {
         public int Id { get; set; }
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public string Street { get; set; } = null!;
-        public string City { get; set; } = null!;
-        public string Country { get; set; } = null!;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Street { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
 
         public ApplicationUser User { get; set; } = null!;
-        public string UserId { get; set; } // FK
+        public string UserId { get; set; } = string.Empty;
     }
 }

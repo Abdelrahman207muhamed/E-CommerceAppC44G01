@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Exceptions;
+using DomainLayer.Models.BasketModule;
 using DomainLayer.Models.OrderModule;
 using Microsoft.Extensions.Configuration;
 using ServiceAbstraction;
@@ -17,68 +18,92 @@ namespace Service
 {
     public class PaymentService(IConfiguration configuration,IBasketRepository _basketRepository ,IUnitOfWork _unitOfWork, IMapper mapper) : IPaymentService
     {
-        public async Task<BasketDto> CreateOrUpdatePaymentAsync(string BasketId)
+        public async Task<BasketDto> CreateOrUpdatePaymentIntentAsync(string basketId)
         {
-            //Configure Stripe =>install Package Stripe
-            StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
+            //[0] Install stripe.net
+            //[1] Set up key [secret key] ==> stripe key
+            StripeConfiguration.ApiKey = configuration.GetSection("StripeSettings")["SecretKey"];
+            //[2] Get basket [by basketId]
+            var basket = await GetBasketAsync(basketId);
+            //[3] Validate items price ==> [basket.item.price = product.price] ==> product from db
+            await ValidateBasketAsync(basket);
+            // 4] Calculate Total amount
+            var amount = CalculateTotalAsync(basket);
+            // 5] Create or update paymentIntentId
+            await CreationOrUpdatePaymentIntentAsync(basket, amount);
+            // 6] Save changes [Update] Basket
+            await _basketRepository.CreateOrUpdateBasketAsync(basket);
+            // 7] Map to BasketDto.
+            return mapper.Map<BasketDto>(basket);
 
-            //Get Basket By BasketId 
-            var Basket = await _basketRepository.GetBasketAsync(BasketId)
-            ?? throw new BasketNotFoundException(BasketId);
+        }
 
-            //Get Amount (Get Product + Delivery Method Cost )
-            var ProductRepo =  _unitOfWork.GetRepository<ProductClass, int>();
+        private async Task CreationOrUpdatePaymentIntentAsync(CustomerBasket basket, long amount)
+        {
+            var stripeService = new PaymentIntentService();
 
-            foreach (var Item in Basket.Items)
+            if (string.IsNullOrEmpty(basket.PaymentIntentId))
             {
-                var Product = await ProductRepo.GetByIdAsync(Item.Id)
-                ?? throw new ProductNotFoundException(Item.Id);
-                Item.Price = Product.Price;
-
-            }
-            //-----------------
-            //DeliveryMethod
-            ArgumentNullException.ThrowIfNull(Basket.DeliveryMethodId);
-            var DeliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, int>().GetByIdAsync(Basket.DeliveryMethodId.Value)
-                ??throw new DeliveryMethodNotFoundException(Basket.DeliveryMethodId.Value) ;
-
-
-            Basket.ShippingPrice = DeliveryMethod.Cost;
-
-            var BasketAmount = (long)(Basket.Items.Sum(item => item.Quantity * item.Price) + DeliveryMethod.Cost) * 100;
-
-
-
-            //Create Payment Intent [Create - Up date]
-
-            var PaymentService = new PaymentIntentService();
-            if (Basket.PaymentIntentId is null) //Create 
-            {
+                // create
                 var options = new PaymentIntentCreateOptions()
                 {
-                    Amount = BasketAmount,
-                    Currency = "USD",
+                    Amount = amount,      // total = subtotal + shippingPrice
+                    Currency = "USD",     // dollar
                     PaymentMethodTypes = ["card"]
                 };
 
-                var PaymentIntent = await PaymentService.CreateAsync(options);
-                Basket.PaymentIntentId = PaymentIntent.Id;
-                Basket.ClientSecret = PaymentIntent.ClientSecret;
+                var paymentIntent = await stripeService.CreateAsync(options);
+                basket.PaymentIntentId = paymentIntent.Id;
+                basket.ClientSecret = paymentIntent.ClientSecret;
             }
-            else 
+            else
             {
-                //Update
-                var Options = new PaymentIntentUpdateOptions()
+                var options = new PaymentIntentUpdateOptions()
                 {
-                    Amount = BasketAmount
+                    Amount = amount
                 };
-                await PaymentService.UpdateAsync(Basket.PaymentIntentId, Options);
 
-            
+                await stripeService.UpdateAsync(basket.PaymentIntentId, options);
             }
-            await _basketRepository.CreateOrUpdateBasketAsync(Basket);
-            return mapper.Map<BasketDto>(Basket);
+        }
 
+        private long CalculateTotalAsync(CustomerBasket basket)
+        {
+            var amount = (long)(basket.Items.Sum(i => i.Quantity * i.Price) + basket.ShippingPrice) * 100;
+            return amount;
+        }
+
+
+
+        private async Task ValidateBasketAsync(CustomerBasket basket)
+        {
+            foreach (var item in basket.Items)
+            {
+                var product = await _unitOfWork.GetRepository<ProductClass, int>().GetByIdAsync(item.Id)
+                    ?? throw new ProductNotFoundException(item.Id);
+
+                item.Price = product.Price;
+            }
+            // Validate shipping Price too.
+            if (!basket.DeliveryMethodId.HasValue) throw new DeliveryMethodNotFoundException("No delivery method selected");
+
+            var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, int>()
+                .GetByIdAsync(basket.DeliveryMethodId.Value)
+                ?? throw new DeliveryMethodNotFoundException(basket.DeliveryMethodId.Value);
+
+            basket.ShippingPrice = deliveryMethod.Cost;
+        }
+
+        private async Task<CustomerBasket> GetBasketAsync(string basketId)
+        {
+            return await _basketRepository.GetBasketAsync(basketId)
+               ?? throw new BasketNotFoundException(basketId);
+        }
+
+        public Task UpdateOrderPaymentStatus(string request, string stripHeader)
+        {
+            throw new NotImplementedException();
         }
     }
+
 }

@@ -16,9 +16,8 @@ namespace Persentation.Controllers
         [HttpPost("{BasketId}")]
         public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntentAsync(string BasketId)
         {
-            var Basket = await serviceManager.PaymentService.CreateOrUpdatePaymentAsync(BasketId);
+            var Basket = await serviceManager.PaymentService.CreateOrUpdatePaymentIntentAsync(BasketId);
             return Ok(Basket);
         }
-        
     }
 }

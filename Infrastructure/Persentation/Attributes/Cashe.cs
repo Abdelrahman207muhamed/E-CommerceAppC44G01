@@ -49,7 +49,7 @@ namespace Persentation.Attributes
 
             if (ExecutedContext.Result is OkObjectResult result)
             {
-                await cashService.SetAsync(CashKey, result.Value, TimeSpan.FromSeconds(DurationsInSec));
+                await cashService.SetAsync(CashKey, result, TimeSpan.FromSeconds(DurationsInSec));
             
             
             }

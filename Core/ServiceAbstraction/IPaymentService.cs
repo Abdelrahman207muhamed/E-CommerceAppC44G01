@@ -9,7 +9,7 @@ namespace ServiceAbstraction
 {
     public interface IPaymentService
     {
-        Task<BasketDto> CreateOrUpdatePaymentAsync(string BasketId);
-
+        public Task<BasketDto> CreateOrUpdatePaymentIntentAsync(string BasketId);
+        public Task UpdateOrderPaymentStatus(string request, string stripHeader);
     }
 }

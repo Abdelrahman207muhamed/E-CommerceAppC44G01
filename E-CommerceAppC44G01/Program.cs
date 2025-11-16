@@ -21,70 +21,7 @@ namespace E_CommerceAppC44G01
     {
         public static async Task Main(string[] args)
         {
-            #region .
-            //var builder = WebApplication.CreateBuilder(args);
-
-            //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-            ////WebApi Services
-            //builder.Services.AddWebApiServices();
-
-            //builder.Services.AddInfraStructureService(builder.Configuration);
-
-            //builder.Services.ADDJWTService(builder.Configuration);
-
-            //builder.Services.AddCoreServices();
-
-            //builder.Services.AddPersentationServices();
-
-
-            //builder.Services.AddScoped<PictureUrlResolver>();
-
-            //#region Angular
-            //builder.Services.AddCors(options=>
-            //{
-            //    options.AddPolicy("AllowAll", builder =>
-            //    {
-            //        builder.AllowAnyHeader();
-            //        builder.AllowAnyMethod();
-            //        builder.AllowAnyOrigin();
-
-            //    });
-
-            //});
-
-            //#endregion
-
-
-            //var app = builder.Build();
-            //await app.SeedDatabaseAsync();
-
-
-            //app.UseCustomMiddleWareExceptions();
-
-            //if (app.Environment.IsDevelopment())
-            //{
-
-
-            //    app.UseSwaggerMiddlewares();
-            //}
-
-            //app.UseHttpsRedirection();
-
-            //app.UseStaticFiles();
-
-            //app.UseRouting();
-
-            //app.UseAuthentication();
-            //app.UseCors("AllowAll");
-
-            //app.UseAuthorization();
-
-            //app.MapControllers();
-
-            //app.Run(); 
-            #endregion
-
+        
             #region DI Container.
             var builder = WebApplication.CreateBuilder(args);
             // Web API services.

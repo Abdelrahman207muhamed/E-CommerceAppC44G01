@@ -9,9 +9,8 @@ namespace DomainLayer.Contracts
 {
     public interface IUnitOfWork
     {
-        //public IGenericRepository<Product,int> ProductRepository { get; }
         IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>;
-
         Task<int> SaveChangesAsync();
+
     }
 }

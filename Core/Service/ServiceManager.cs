@@ -12,12 +12,13 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class ServiceManager (IUnitOfWork unitOfWork ,IMapper mapper,IBasketRepository _basketRepository , UserManager<ApplicationUser> _userManager,IConfiguration _configuration) : IServiceManager
+    public class ServiceManager(IUnitOfWork unitOfWork, IMapper mapper, IBasketRepository _basketRepository, UserManager<ApplicationUser> _userManager, IConfiguration _configuration) /*: IServiceManager*/
     {
         private readonly Lazy<ProductService> _LazyProductService = new Lazy<ProductService>(() => new ProductService(unitOfWork, mapper));
         private readonly Lazy<IBasketService> _LazyBasketService = new Lazy<IBasketService>(() => new BasketService(_basketRepository, mapper));
-        private readonly Lazy<IAuthenticationService> _LazyAuthenticationService = new Lazy<IAuthenticationService>(()=>new AuthenticationService(_userManager,_configuration,mapper));
+        private readonly Lazy<IAuthenticationService> _LazyAuthenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(_userManager, _configuration, mapper));
         private readonly Lazy<IOrderService> _LazyorderService = new Lazy<IOrderService>(() => new OrderService(_basketRepository, mapper, unitOfWork));
+        private readonly Lazy<IPaymentService> _paymentService = new Lazy<IPaymentService>(() => new PaymentService(_configuration, _basketRepository, unitOfWork, mapper));
         public IProductService ProductService => _LazyProductService.Value;
 
         public IBasketService BasketService => _LazyBasketService.Value;
@@ -25,5 +26,7 @@ namespace Service
         public IAuthenticationService AuthenticationService => _LazyAuthenticationService.Value;
 
         public IOrderService OrderService => _LazyorderService.Value;
+
+        public IPaymentService PaymentService => _paymentService.Value;
     }
 }

@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace DomainLayer.Exceptions
 {
-    public class ProductNotFoundException(int Id) : NotFoundException ($"The Product With ID ={Id} Is Not Found")
+    public sealed class ProductNotFoundException : NotFoundException
     {
+        public ProductNotFoundException(int id)
+            : base($"Product with Id {id} Not found")
+        {
+
+        }
     }
 }

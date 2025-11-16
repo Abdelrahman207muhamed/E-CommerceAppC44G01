@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace DomainLayer.Exceptions
 {
-    public sealed class UserNotFoundException : NotFoundException
+    public class OrderNotFoundException : NotFoundException
     {
-        public UserNotFoundException(string email) : base($"the User with the email : {email} Not found")
+        public OrderNotFoundException(Guid id) : base($"Order With Id {id} Not Found")
         {
-
         }
     }
 }

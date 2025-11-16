@@ -40,21 +40,24 @@ namespace Service
 
             #endregion
 
-            #region Identity
-            CreateMap<Address, AddressDto>().ReverseMap();
-            #endregion
-          
+                      
             #region Order
-            CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<ShippingAddress, AddressDto>().ReverseMap();
             CreateMap<ShippingAddress, ShippingAddressDto>().ReverseMap();
+            CreateMap<DeliveryMethod, DeliveryMethodDto>()
+                .ForMember(dest => dest.Cost, options => options.MapFrom(src => src.Cost));
+            ;
 
             CreateMap<OrderItem, OrderItemsDto>()
                 .ForMember(d => d.ProductId, o => o.MapFrom(s => s.Product.ProductId))
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.ProductName))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.Product.PictureUrl));
 
-            CreateMap<Order, OrderToReturnDto>();
-              
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(dest => dest.Status, options => options.MapFrom(src => src.status.ToString()))
+                .ForMember(dest => dest.DeliveryMethod, options => options.MapFrom(src => src.DeliveryMethod.ShortName))
+                .ForMember(dest => dest.Total, options => options.MapFrom(src => src.subTotal + src.DeliveryMethod.Cost));
+
 
 
 

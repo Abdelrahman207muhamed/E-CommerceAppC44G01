@@ -38,7 +38,7 @@ namespace Persistence.Repositories
             }
             else 
             {
-                return JsonSerializer.Deserialize<CustomerBasket>(Basket); 
+                return JsonSerializer.Deserialize<CustomerBasket>(Basket!); 
             }
         }
        

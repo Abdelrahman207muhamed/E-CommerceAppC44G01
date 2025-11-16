@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainLayer.Exceptions
 {
-    public abstract class NotFoundException(string Message) :Exception(Message)
+    public  class NotFoundException(string Message) :Exception(Message)
     {
 
     }
