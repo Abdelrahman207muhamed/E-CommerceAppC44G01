@@ -32,7 +32,7 @@ namespace E_CommerceAppC44G01.Extentions
          
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.InvalidModelStateResponseFactory = APIResponseFactory.CustomValidationErrorResponse;
+                options.InvalidModelStateResponseFactory = APIResponseFactory.GenerateApiValidationErrorResponse;
             });
 
             return services;
