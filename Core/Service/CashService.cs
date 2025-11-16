@@ -1,0 +1,25 @@
+﻿using DomainLayer.Contracts;
+using ServiceAbstraction;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Service
+{
+    public class CashService(ICashRepository _cashRepository) : ICashService
+    {
+        public async Task<string?> GetAsync(string CashKey)
+       
+            => await _cashRepository.GetAsync(CashKey);
+
+        public async Task SetAsync(string CashKey, object CashValue, TimeSpan TimeToLive)
+        {
+            var Value = JsonSerializer.Serialize(CashValue);
+            await _cashRepository.SetAsync(CashKey, Value, TimeToLive);
+
+        }
+    }
+}

@@ -1,26 +1,22 @@
 ﻿using DomainLayer.Contracts;
 using E_CommerceAppC44G01.CustomMiddelWare;
-using E_CommerceAppC44G01.Factories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Text.Json;
 
 namespace E_CommerceAppC44G01.Extentions
 {
     public static class WebApplicationExtensions
     {
-        public static async Task<WebApplication> SeedDbAsync(this WebApplication app)
+        public static async Task<WebApplication> SeedDatabaseAsync(this WebApplication app)
         {
-            //Create Object From Type That Implements IDbinitializer
-            using var Scope = app.Services.CreateScope();
-            var ObjectOfDataSeeding = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            await ObjectOfDataSeeding.DataSeedAsync();
-            await ObjectOfDataSeeding.IdentityDataSeed();
+            #region Call SeedData before Any Request.
+            // to get an instance of DataSeeding Manually and call the method SeedData before the request executed.
+            using var scope = app.Services.CreateScope();
+            var objOfDataSeeding = scope.ServiceProvider.GetRequiredService<IDataSeeding>();
+            await objOfDataSeeding.DataSeedAsync();
+            await objOfDataSeeding.IdentityDataSeed();
+            #endregion
             return app;
         }
-
-        public static WebApplication UseCustomMiddleWareExceptions(this WebApplication app)
+        public static WebApplication UseExceptionHandlingMiddleWare(this WebApplication app)
         {
             app.UseMiddleware<CustomExceptionHandlerMiddelWare>();
             return app;
@@ -29,25 +25,22 @@ namespace E_CommerceAppC44G01.Extentions
         public static WebApplication UseSwaggerMiddlewares(this WebApplication app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(  options =>
-            {
-                options.ConfigObject = new ConfigObject()
-                {
-                    DisplayRequestDuration = true
-
-                };
-                options.DocumentTitle = "My E-Commerce API";
-                options.JsonSerializerOptions = new JsonSerializerOptions()
-                {
-
-                    PropertyNamingPolicy  = JsonNamingPolicy.CamelCase
-                };
-                options.DocExpansion(DocExpansion.None);
-                options.EnableFilter();
-                options.EnablePersistAuthorization();
-
-            });
-
+            app.UseSwaggerUI();
+            //app.UseSwaggerUI(options =>
+            //{
+            //    options.ConfigObject = new Swashbuckle.AspNetCore.SwaggerUI.ConfigObject()
+            //    {
+            //        DisplayRequestDuration = true
+            //    };
+            //    options.DocumentTitle = "My E-Commerce API";
+            //    options.JsonSerializerOptions = new JsonSerializerOptions()
+            //    {
+            //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            //    };
+            //    options.DocExpansion(DocExpansion.None);
+            //    options.EnableFilter();
+            //    options.EnablePersistAuthorization();
+            //});
             return app;
         }
     }

@@ -13,9 +13,9 @@ namespace Shared
         private const int MaxPageSize = 10;// لو الشخص تجاوز الماكس مش هقبلها 
         public int? TypeId { get; set; }
         public int? BrandId { get; set; }
-        public ProductSortingOptions  sortingOptions { get; set; }
-        public string? SreachValue { get; set; }
-        public int PageIndex { get; set; } = 1;
+        public ProductSortingOptions  sort { get; set; }
+        public string? search { get; set; }
+        public int pageNumber { get; set; } = 1;
 
         private int pagesize = DefaultPageSize;
         public int PageSize 

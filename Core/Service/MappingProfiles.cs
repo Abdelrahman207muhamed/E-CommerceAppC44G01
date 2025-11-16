@@ -22,17 +22,17 @@ namespace Service
             #region Product
              
             CreateMap<Product, ProductDto>() //مطلبش مني اعمل ريفيرس ماب 
-                .ForMember(dist=>dist.BrandName,options=>options.MapFrom(src=>src.productBrand.Name))
-                .ForMember(dist => dist.TypeName, options => options.MapFrom(src => src.productType.Name))
+                .ForMember(dist=>dist.productBrand,options=>options.MapFrom(src=>src.productBrand.Name))
+                .ForMember(dist => dist.productType, options => options.MapFrom(src => src.productType.Name))
                 .ForMember(dist=>dist.PictureUrl,options=>options.MapFrom<PictureUrlResolver>());
 
 
             CreateMap<ProductType, TypeDto>();      ////مطلبش مني اعمل ريفيرس ماب 
             CreateMap<ProductBrand, BrandDto>();    ////مطلبش مني اعمل ريفيرس ماب 
-
+            //
 
             #endregion
-
+            
             #region Basket
 
             CreateMap<CustomerBasket, BasketDto>().ReverseMap();
@@ -42,28 +42,24 @@ namespace Service
 
             #region Identity
             CreateMap<Address, AddressDto>().ReverseMap();
-
             #endregion
-
+          
             #region Order
-            CreateMap<ShippingAddressDto, ShippingAddress>().ReverseMap();
-
-            CreateMap<Order, OrderToReturnDto>()
-                .ForMember(D => D.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
-                .ForMember(d=>d.Total,o=>o.MapFrom(s=>s.GetTotal()));
+            CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<ShippingAddress, ShippingAddressDto>().ReverseMap();
 
             CreateMap<OrderItem, OrderItemsDto>()
+                .ForMember(d => d.ProductId, o => o.MapFrom(s => s.Product.ProductId))
                 .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.ProductName))
-                .ForMember(d=>d.PictureUrl,o=>o.MapFrom<OrderItemPictureUrlResolver>())
-                .ForMember(d=>d.Price,o=>o.MapFrom(s=>s.Price))
-                .ForMember(d=>d.Quantity,o=>o.MapFrom(s=>s.Quantity));
+                .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.Product.PictureUrl));
 
-            CreateMap<DeliveryMethod, DeliveryMethodDto>()
-                .ReverseMap();  // No custom mapping needed now
+            CreateMap<Order, OrderToReturnDto>();
+              
 
 
 
             #endregion
+
 
         }
     }

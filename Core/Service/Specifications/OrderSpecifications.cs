@@ -10,11 +10,11 @@ namespace Service.Specifications
     public class OrderSpecifications :BaseSpecifications<Order,Guid>
     {
         //Get All Order By Email
-        public OrderSpecifications(string Email) : base(o => o.UserEmail == Email)
+        public OrderSpecifications(string Email) : base(o => o.buyerEmail == Email)
         {
             AddInclude(o => o.DeliveryMethod);
-            AddInclude(o => o.Items);
-            AddOrderByDescending(o => o.OrderDate);
+            AddInclude(o => o.items);
+            AddOrderByDescending(o => o.orderDate);
 
 
         }
@@ -22,7 +22,7 @@ namespace Service.Specifications
         public OrderSpecifications(Guid Id) : base(o => o.Id == Id)
         {
             AddInclude(o => o.DeliveryMethod);
-            AddInclude(o => o.Items);
+            AddInclude(o => o.items);
         }
 
     }

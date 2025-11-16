@@ -29,7 +29,7 @@ namespace Service
             var CountSpec = new ProductCountSpecifications(queryParams);
             var TotalCount = await Repo.CountAsync(CountSpec);
            
-            return new PaginatedResult<ProductDto>(ProductCount, queryParams.PageIndex, TotalCount, Data);
+            return new PaginatedResult<ProductDto>(ProductCount, queryParams.pageNumber, TotalCount, Data);
         }
 
         public async Task<IEnumerable<BrandDto>> GetAllBrandsAsync()

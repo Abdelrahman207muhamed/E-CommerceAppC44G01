@@ -14,7 +14,7 @@ namespace Persistence.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
-            builder.Property(D => D.Price)
+            builder.Property(D => D.Cost)
                 .HasColumnType("decimal(8,2)");
             //--------------------
             builder.Property(D => D.ShortName)

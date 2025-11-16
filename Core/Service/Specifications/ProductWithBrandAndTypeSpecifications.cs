@@ -15,14 +15,14 @@ namespace Service.Specifications
         public ProductWithBrandAndTypeSpecifications(ProductQueryParams queryParams)
             : base( P => (!queryParams.BrandId.HasValue || P.BrandId == queryParams.BrandId)
             &&(!queryParams.TypeId.HasValue || P.TypeId == queryParams.TypeId)
-            && (string.IsNullOrWhiteSpace(queryParams.SreachValue) || P.Name.Contains(queryParams.SreachValue.ToLower())))
+            && (string.IsNullOrWhiteSpace(queryParams.search) || P.Name.Contains(queryParams.search.ToLower())))
         {
             AddInclude(P => P.productBrand);
             AddInclude(P => P.productType);
-            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+            ApplyPagination(queryParams.PageSize, queryParams.pageNumber);
            
             #region Sorting
-            switch (queryParams.sortingOptions)
+            switch (queryParams.sort)
             {
                 case ProductSortingOptions.NameAsc:
                     AddOrderBy(P => P.Name);

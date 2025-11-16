@@ -10,8 +10,8 @@ namespace DomainLayer.Models
     {
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
+        public decimal Price { get; set; } = default!;
         public string PictureUrl { get; set; } = null!;
-        public decimal Price { get; set; }
 
         #region Product Brand
         public int BrandId { get; set; }

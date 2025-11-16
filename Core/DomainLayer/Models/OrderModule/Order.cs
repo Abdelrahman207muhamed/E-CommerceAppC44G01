@@ -15,37 +15,38 @@ namespace DomainLayer.Models.OrderModule
         }
 
         public Order(string _UserEmail, ShippingAddress _Address
-            , DeliveryMethod _DeliveryMethod, ICollection<OrderItem> _Items, decimal _SubTotal)
+            , DeliveryMethod _DeliveryMethod, ICollection<OrderItem> _Items, decimal _SubTotal,string _PaymentIntentId )
         {
-            UserEmail = _UserEmail;
-            Address = _Address;
+            buyerEmail = _UserEmail;
+            shipToAddress = _Address;
             DeliveryMethod = _DeliveryMethod;
-            Items= _Items;
-            SubTotal= _SubTotal;    
-
+            items = _Items;
+            subTotal = _SubTotal;
+            PaymentIntentId = _PaymentIntentId;
         }
 
-        public string UserEmail { get; set; } = null!;
+        public string buyerEmail { get; set; } = null!;
         
-        public DateTimeOffset OrderDate { get; set; }= DateTimeOffset.Now;
+        public DateTimeOffset orderDate { get; set; }= DateTimeOffset.Now;
         
         public OrderStatus OrderStatus { get; set; }
         
-        public ShippingAddress Address { get; set; } = null!;
+        public ShippingAddress shipToAddress { get; set; } = null!;
         
         public DeliveryMethod DeliveryMethod { get; set; } = null!;
        
         public int DeliveryMethodId { get; set; } //FK
 
-        public ICollection<OrderItem> Items { get; set; } = [];
+        public string PaymentIntentId { get; set; } 
 
-        public decimal SubTotal { get; set; }
-        
-        public decimal GetTotal()
-        
-        =>   SubTotal + DeliveryMethod.Price;
-        
+        public OrderStatus status { get; set; }
 
+        public ICollection<OrderItem> items { get; set; } = [];
+
+        public decimal subTotal { get; set; }
+
+        public decimal deliveryCost => DeliveryMethod.Cost;
+        
 
     }
 }

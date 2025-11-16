@@ -1,5 +1,6 @@
 ﻿using DomainLayer.Exceptions;
 using Shared.ErroModels;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace E_CommerceAppC44G01.CustomMiddelWare
@@ -9,7 +10,7 @@ namespace E_CommerceAppC44G01.CustomMiddelWare
         private readonly RequestDelegate _next;
         private readonly ILogger<CustomExceptionHandlerMiddelWare> _logger;
 
-        public CustomExceptionHandlerMiddelWare(RequestDelegate Next,ILogger<CustomExceptionHandlerMiddelWare>logger)
+        public CustomExceptionHandlerMiddelWare(RequestDelegate Next, ILogger<CustomExceptionHandlerMiddelWare> logger)
         {
             _next = Next;
             _logger = logger;
@@ -29,7 +30,6 @@ namespace E_CommerceAppC44G01.CustomMiddelWare
             }
         }
 
-
         private static async Task HandelExceptionAsync(HttpContext httpContext, Exception ex)
         {
             var Response = new ErrorToReturn()
@@ -40,9 +40,9 @@ namespace E_CommerceAppC44G01.CustomMiddelWare
             Response.StatusCode = ex switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
-                UnauthorizedException=>StatusCodes.Status401Unauthorized,
-                BadRequestException badRequestException=>GetBadRequestErrors(badRequestException ,Response),
-                _ => StatusCodes.Status500InternalServerError 
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
+                BadRequestException badRequestException => GetBadRequestErrors(badRequestException, Response),
+                _ => StatusCodes.Status500InternalServerError
             };
 
             //Response Object As Json
@@ -70,4 +70,5 @@ namespace E_CommerceAppC44G01.CustomMiddelWare
             }
         }
     }
+
 }

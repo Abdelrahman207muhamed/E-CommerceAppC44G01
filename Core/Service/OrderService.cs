@@ -20,12 +20,20 @@ namespace Service
         {
             //Map Address To OrdereAddress
 
-            var OrderAddress = _mapper.Map<ShippingAddressDto, ShippingAddress>(orderDtos.Address);
+            var OrderAddress = _mapper.Map<ShippingAddressDto, ShippingAddress>(orderDtos.ShipToAddress);
 
             //Get Basket
             var Basket = await _basketRepository.GetBasketAsync(orderDtos.BasketId)
                 ?? throw new BasketNotFoundException(orderDtos.BasketId);
 
+            ArgumentNullException.ThrowIfNullOrEmpty(Basket.PaymentIntentId);
+            var OrderRepo = _unitOfWork.GetRepository<Order, Guid>();
+            var OrderSpec = new OrderWithPaymentIntentIdSpecifications(Basket.PaymentIntentId);
+            var ExistingOrder = await OrderRepo.GetByIdAsync(OrderSpec);
+            if (ExistingOrder is not null)
+            {
+                OrderRepo.Remove(ExistingOrder);
+            }
 
             //Create Order List
 
@@ -63,7 +71,7 @@ namespace Service
 
             //Create Order
 
-            var Order = new Order(Email, OrderAddress, DeliveryMethod, OrderItems, SubTotal);
+            var Order = new Order(Email, OrderAddress, DeliveryMethod, OrderItems, SubTotal,Basket.PaymentIntentId);
 
             //Add Order
             await _unitOfWork.GetRepository<Order, Guid>().AddAsync(Order);

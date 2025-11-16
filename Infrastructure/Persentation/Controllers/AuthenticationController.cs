@@ -14,7 +14,7 @@ namespace Persentation.Controllers
     public class AuthenticationController(IServiceManager _serviceManager) : APIBaseController
     {
         #region login
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
          {
             var User = await _serviceManager.AuthenticationService.LoginAsync(loginDto);
@@ -23,7 +23,7 @@ namespace Persentation.Controllers
         #endregion
 
         #region register
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             var User = await _serviceManager.AuthenticationService.RegisterAsync(registerDto);
@@ -33,7 +33,7 @@ namespace Persentation.Controllers
         #endregion
 
         #region Check Email 
-        [HttpGet("CheckEmail")]
+        [HttpGet("emailexists")]
         public async Task<ActionResult<bool>> CheckEmail(string Email)
         {
             var Result = await _serviceManager.AuthenticationService.CheckEmailAsync(Email);
@@ -45,7 +45,7 @@ namespace Persentation.Controllers
 
         #region CurrentUser 
         [Authorize]
-        [HttpGet("CurrentUser")]
+        [HttpGet("address")]
         public async Task<ActionResult<UserDto>> GetCurrentUser() 
         {
             var Email = User.FindFirstValue(ClaimTypes.Email);
@@ -56,24 +56,10 @@ namespace Persentation.Controllers
 
         #endregion
 
-        #region GetCurrentUserAddress
-        [Authorize]
-        [HttpGet("Address")]
-        public async Task<ActionResult<AddressDto>> GetCurrentUserAddress()
-        {
-            var Email = User.FindFirstValue(ClaimTypes.Email);
-            var Address = await _serviceManager.AuthenticationService.GetCurrentUserAddress(Email);
-            return Ok(Address);
-
-        }
-
-
-
-        #endregion
-
+       
         #region UpdateCurrentUserAddress 
         [Authorize]
-        [HttpPut("Address")]
+        [HttpPut("address")]
         public async Task<ActionResult<AddressDto>> UpdateCurrentUserAddress(AddressDto addressDto)
         {
             var Email = User.FindFirstValue(ClaimTypes.Email);

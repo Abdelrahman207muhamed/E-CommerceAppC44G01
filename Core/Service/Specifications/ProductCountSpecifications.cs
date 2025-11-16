@@ -10,7 +10,7 @@ namespace Service.Specifications
 {   
     public class ProductCountSpecifications(ProductQueryParams queryParams):BaseSpecifications<Product,int>(P => (!queryParams.BrandId.HasValue || P.BrandId == queryParams.BrandId)
             && (!queryParams.TypeId.HasValue || P.TypeId == queryParams.TypeId)
-            && (string.IsNullOrWhiteSpace(queryParams.SreachValue) || P.Name.Contains(queryParams.SreachValue.ToLower())))
+            && (string.IsNullOrWhiteSpace(queryParams.search) || P.Name.Contains(queryParams.search.ToLower())))
     {
 
     }
