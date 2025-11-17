@@ -3,6 +3,8 @@ using E_CommerceAppC44G01.CustomMiddelWare;
 using E_CommerceAppC44G01.Factories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Text.Json;
 
 namespace E_CommerceAppC44G01.Extentions
 {
@@ -27,7 +29,25 @@ namespace E_CommerceAppC44G01.Extentions
         public static WebApplication UseSwaggerMiddlewares(this WebApplication app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(  options =>
+            {
+                options.ConfigObject = new ConfigObject()
+                {
+                    DisplayRequestDuration = true
+
+                };
+                options.DocumentTitle = "My E-Commerce API";
+                options.JsonSerializerOptions = new JsonSerializerOptions()
+                {
+
+                    PropertyNamingPolicy  = JsonNamingPolicy.CamelCase
+                };
+                options.DocExpansion(DocExpansion.None);
+                options.EnableFilter();
+                options.EnablePersistAuthorization();
+
+            });
+
             return app;
         }
     }

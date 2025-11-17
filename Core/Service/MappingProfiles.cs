@@ -46,7 +46,22 @@ namespace Service
             #endregion
 
             #region Order
-            CreateMap<ShippingAddressDto, ShippingAddress>();
+            CreateMap<ShippingAddressDto, ShippingAddress>().ReverseMap();
+
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(D => D.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
+                .ForMember(d=>d.Total,o=>o.MapFrom(s=>s.GetTotal()));
+
+            CreateMap<OrderItem, OrderItemsDto>()
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.Product.ProductName))
+                .ForMember(d=>d.PictureUrl,o=>o.MapFrom<OrderItemPictureUrlResolver>())
+                .ForMember(d=>d.Price,o=>o.MapFrom(s=>s.Price))
+                .ForMember(d=>d.Quantity,o=>o.MapFrom(s=>s.Quantity));
+
+            CreateMap<DeliveryMethod, DeliveryMethodDto>()
+                .ReverseMap();  // No custom mapping needed now
+
+
 
             #endregion
 

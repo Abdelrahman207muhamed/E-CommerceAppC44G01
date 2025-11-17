@@ -11,7 +11,7 @@ namespace E_CommerceAppC44G01.Extentions
     {
         public static IServiceCollection AddCoreServices(this IServiceCollection Services)
         {
-            Services.AddAutoMapper(typeof(AssemblyReference).Assembly);
+            Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
             Services.AddScoped<IServiceManager, ServiceManager>();
 
